@@ -4,6 +4,11 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
+import CommentIcon from "@mui/icons-material/Comment";
+import { Avatar, Box, Divider, Grid } from "@mui/material";
+import Image from "next/image";
+
+//fetching a single post
 async function getPost(id: string) {
   const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
   if (!res.ok) {
@@ -12,6 +17,8 @@ async function getPost(id: string) {
   }
   return res.json();
 }
+
+//fetching comments related to that post
 async function getComments(id: string) {
   const res = await fetch(
     `https://jsonplaceholder.typicode.com/comments?postId=${id}`
@@ -21,18 +28,26 @@ async function getComments(id: string) {
   }
   return res.json();
 }
-import { Avatar, Box, Divider, Grid } from "@mui/material";
+interface comment {
+  email: string;
+  body: string;
+}
+interface Post {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+}
 export default async function DetailPage({
   params: { id },
 }: {
   params: { id: string };
 }) {
-  const comments: [] = await getComments(id);
-  const post = await getPost(id);
-  console.log(comments);
-  console.log(post);
+  const comments: comment[] = await getComments(id);
+  const post:Post = await getPost(id);
+  const userImages: string[] = ["user1", "user2", "user3", "user4", "user5"];
   return (
-    <div className="flex justify-center align-middle m-auto">
+    <div className="flex justify-center mt-8">
       <Card sx={{ maxWidth: 345 }}>
         <CardActionArea>
           <CardMedia
@@ -43,33 +58,33 @@ export default async function DetailPage({
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
-              Title : {post.title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {post.body}
+              {post.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {post.body}
             </Typography>
             <Divider className="mb-4 mt-4" />
             <Typography className="font-bold" variant="body2" gutterBottom>
-              Comments ({comments?.length})
+              <CommentIcon fontSize="small" /> Comments ({comments?.length})
             </Typography>
-            <Divider className="mt-4" />
-            {comments.map((comment: any, index: any) => (
+            <Divider className="mt-4 mb-4" />
+            {comments.map((comment: comment, index: number) => (
               <Box key={index} mt={1}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Avatar />
+                    <Image
+                      src={`/${userImages[index]}.jpg`}
+                      width={40}
+                      height={50}
+                      alt="Picture of the author"
+                      className="rounded-xl"
+                    />
                   </Grid>
                   <Grid item xs>
                     <Typography variant="subtitle1" color="textSecondary">
-                      Posted by {comment.email}
+                      {comment.email}
                     </Typography>
-                    <br />
-                    <Typography variant="caption" color="textSecondary">
-                      {comment.body}
-                    </Typography>
+                    <Typography variant="caption">{comment.body}</Typography>
                   </Grid>
                 </Grid>
               </Box>
