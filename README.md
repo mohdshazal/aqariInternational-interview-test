@@ -8,6 +8,7 @@ Clone and Run Instructions
 2. Navigate into the project directory : cd aqua-interview-test
 3. Install dependencies : npm install # or yarn install
 4. Run the development server : npm run dev # or yarn dev
+# Sample Deployed Link - https://aqari-international-interview-test.vercel.app/
 
 
 
